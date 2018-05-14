@@ -37,6 +37,12 @@ module.exports = function supplyDefaults(traceIn, traceOut, defaultColor, layout
     coerce('cy');
     coerce('cz');
 
+    coerce('maxLength');
+    coerce('widthScale');
+    coerce('bounds');
+
+    coerce('colormap');
+
     coerce('text');
 
     coerce('lighting.ambient');

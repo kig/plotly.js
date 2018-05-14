@@ -63,28 +63,83 @@ function convert(scene, trace) {
         });
     }
 
+    function min(a) {
+        var result = a[0];
+        for (var i=1; i<a.length; i++) {
+            if (a[i] < result) {
+                result = a[i];
+            }
+        }
+        return result;
+    }
+
+    function max(a) {
+        var result = a[0];
+        for (var i=1; i<a.length; i++) {
+            if (a[i] > result) {
+                result = a[i];
+            }
+        }
+        return result;
+    }
+
+    // var us = []; for (var i=0; i<27; i++) us.push(Math.sin(i*0.1));
+    // var vs = []; for (var i=0; i<27; i++) vs.push(Math.cos(i*0.1));
+    // var ws = []; for (var i=0; i<27; i++) ws.push(0.3*Math.sin(i*0.3));
+    // var cx = [], cy=[],cz=[]; for (var i=0; i<7; i++) for(var j=0;j<7;j++) {cx.push(-5); cy.push(i-3); cz.push(j-3); }
+    // Plotly.newPlot(gd, [{
+    //   type: 'streamtube',
+    //   cx, cy, cz,
+    //   u: us, v: vs, w: ws,
+    //   x: [-3,0,3], y: [-3,0,3], z: [-3,0,3],
+    //   bounds: [[-5, -5, -5], [5, 5, 5]], widthScale: 100, colormap:'portland'
+    // }], {
+    //   scene: {
+    //     xaxis: {range: [-5, 5]},
+    //     yaxis: {range: [-5, 5]},
+    //     zaxis: {range: [-5, 5]}
+    //   }
+    // })
+    
     var params = {
-        startingPositions: [ [-0.2,-0.2,-0.2], [0.2,0.2,0.2] ],
-        meshgrid: [
+        startingPositions: zip3(
             toDataCoords(layout.xaxis, trace.cx, scene.dataScale[0]),
             toDataCoords(layout.yaxis, trace.cy, scene.dataScale[1]),
             toDataCoords(layout.zaxis, trace.cz, scene.dataScale[2])
+        ),
+        meshgrid: [
+            toDataCoords(layout.xaxis, trace.x, scene.dataScale[0]),
+            toDataCoords(layout.yaxis, trace.y, scene.dataScale[1]),
+            toDataCoords(layout.zaxis, trace.z, scene.dataScale[2])
         ],
         vectors: zip3(
             toDataCoords(layout.xaxis, trace.u, scene.dataScale[0]),
             toDataCoords(layout.yaxis, trace.v, scene.dataScale[1]),
             toDataCoords(layout.zaxis, trace.w, scene.dataScale[2])
         ),
-        colormap: 'portland'
+        colormap: trace.colormap,
+        maxLength: trace.maxLength,
+        widthScale: trace.widthScale
     };
 
-    var vectors = params.vectors;
-    params.vectors = params.vectors.concat(vectors);
-    params.vectors = params.vectors.concat(vectors);
+    var bounds = trace.bounds || [[min(trace.u), min(trace.v), min(trace.w)], [max(trace.u), max(trace.v), max(trace.w)]];
+
+    bounds = [
+        [
+            layout.xaxis.d2l(bounds[0][0]) * scene.dataScale[0],
+            layout.yaxis.d2l(bounds[0][1]) * scene.dataScale[1],
+            layout.zaxis.d2l(bounds[0][2]) * scene.dataScale[2]
+        ],
+        [
+            layout.xaxis.d2l(bounds[1][0]) * scene.dataScale[0],
+            layout.yaxis.d2l(bounds[1][1]) * scene.dataScale[1],
+            layout.zaxis.d2l(bounds[1][2]) * scene.dataScale[2]
+        ],
+    ];
 
     var meshData = tube2mesh(
         params,
-        [[-5, -5, -5], [5, 5, 5]]
+        bounds
     );
 
     return meshData;

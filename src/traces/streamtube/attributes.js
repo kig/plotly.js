@@ -71,6 +71,40 @@ var attrs = {
         ].join(' ')
     },
 
+    bounds: {
+        valType: 'data_array',
+        editType: 'calc+clearAxisTypes',
+        description: [
+        ].join(' ')
+    },
+
+    colormap: {
+        valType: 'string',
+        role: 'style',
+        editType: 'calc',
+        description: [
+        ].join(' ')
+    },
+
+    maxLength: {
+        valType: 'number',
+        min: 1,
+        dflt: 1000,
+        editType: 'calc',
+        description: [
+        ].join(' ')
+    },
+
+    widthScale: {
+        valType: 'number',
+        role: 'style',
+        min: 0,
+        dflt: 100,
+        editType: 'calc',
+        description: [
+        ].join(' ')
+    },
+
     // TODO
 //     sizemode: {},
 //     sizescale: {},
