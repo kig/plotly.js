@@ -71,6 +71,24 @@ var attrs = {
         ].join(' ')
     },
 
+    colormap: {
+        valType: 'string',
+        role: 'style',
+        editType: 'calc',
+        description: [
+        ].join(' ')
+    },
+
+    coneSize: {
+        valType: 'number',
+        role: 'style',
+        min: 0,
+        dflt: 1,
+        editType: 'calc',
+        description: [
+        ].join(' ')
+    },
+
     // TODO
 //     sizemode: {},
 //     sizescale: {},

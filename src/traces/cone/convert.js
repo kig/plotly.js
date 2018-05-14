@@ -73,19 +73,19 @@ function convert(scene, trace) {
         coneSize: trace.coneSize
     };
 
-    if (trace.meshgrid) {
+    if (trace.x && trace.x.length > 0) {
         params.meshgrid = [
-            toDataCoords(layout.xaxis, trace.meshgrid[0], scene.dataScale[0]),
-            toDataCoords(layout.yaxis, trace.meshgrid[1], scene.dataScale[1]),
-            toDataCoords(layout.zaxis, trace.meshgrid[2], scene.dataScale[2])
+            toDataCoords(layout.xaxis, trace.x, scene.dataScale[0]),
+            toDataCoords(layout.yaxis, trace.y, scene.dataScale[1]),
+            toDataCoords(layout.zaxis, trace.z, scene.dataScale[2])
         ];
-    } else {
-        params.positions = zip3(
-            toDataCoords(layout.xaxis, trace.cx, scene.dataScale[0]),
-            toDataCoords(layout.yaxis, trace.cy, scene.dataScale[1]),
-            toDataCoords(layout.zaxis, trace.cz, scene.dataScale[2])
-        );
     }
+
+    params.positions = zip3(
+        toDataCoords(layout.xaxis, trace.cx, scene.dataScale[0]),
+        toDataCoords(layout.yaxis, trace.cy, scene.dataScale[1]),
+        toDataCoords(layout.zaxis, trace.cz, scene.dataScale[2])
+    );
 
     var meshData = cone2mesh(params);
 

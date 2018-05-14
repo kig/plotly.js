@@ -37,6 +37,9 @@ module.exports = function supplyDefaults(traceIn, traceOut, defaultColor, layout
     coerce('cy');
     coerce('cz');
 
+    coerce('coneSize');
+    coerce('colormap');
+
     coerce('text');
 
     coerce('lighting.ambient');
