@@ -63,19 +63,31 @@ function convert(scene, trace) {
         });
     }
 
-    var meshData = cone2mesh({
-        positions: zip3(
-            toDataCoords(layout.xaxis, trace.cx, scene.dataScale[0]),
-            toDataCoords(layout.yaxis, trace.cy, scene.dataScale[1]),
-            toDataCoords(layout.zaxis, trace.cz, scene.dataScale[2])
-        ),
+    var params = {
         vectors: zip3(
             toDataCoords(layout.xaxis, trace.u, scene.dataScale[0]),
             toDataCoords(layout.yaxis, trace.v, scene.dataScale[1]),
             toDataCoords(layout.zaxis, trace.w, scene.dataScale[2])
         ),
-        colormap: 'portland'
-    });
+        colormap: trace.colormap,
+        coneSize: trace.coneSize
+    };
+
+    if (trace.meshgrid) {
+        params.meshgrid = [
+            toDataCoords(layout.xaxis, trace.meshgrid[0], scene.dataScale[0]),
+            toDataCoords(layout.yaxis, trace.meshgrid[1], scene.dataScale[1]),
+            toDataCoords(layout.zaxis, trace.meshgrid[2], scene.dataScale[2])
+        ];
+    } else {
+        params.positions = zip3(
+            toDataCoords(layout.xaxis, trace.cx, scene.dataScale[0]),
+            toDataCoords(layout.yaxis, trace.cy, scene.dataScale[1]),
+            toDataCoords(layout.zaxis, trace.cz, scene.dataScale[2])
+        );
+    }
+
+    var meshData = cone2mesh(params);
 
     return meshData;
 };
@@ -94,7 +106,8 @@ function createMesh3DTrace(scene, trace) {
     var gl = scene.glplot.gl;
     var meshData = convert(scene, trace);
     var mesh = createMesh(gl, meshData);
-    var result = new Mesh3DTrace(scene, mesh, data.uid);
+    var result = new Mesh3DTrace(scene, mesh, trace.uid);
+    result.data = {hoverinfo: 'skip'};
 
     mesh._trace = result;
     scene.glplot.add(mesh);
