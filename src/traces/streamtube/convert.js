@@ -6,6 +6,34 @@
 * LICENSE file in the root directory of this source tree.
 */
 
+/*
+    Usage example:
+
+    var x = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+    var y = x, z = x;
+    var len = x.length * y.length * z.length;
+    var u=[],v=[],w=[]; for (var i=0; i<len; i++) { u.push(1+Math.sin(i)); v.push(Math.cos(i)); w.push(Math.sin(i*0.3)*0.3); }
+    var cx=[],cy=[],cz=[]; for (var i=0; i<7; i++) for(var j=0; j<7; j++) { cx.push(-5); cy.push(i-3); cz.push(j-3); }
+
+    Plotly.newPlot(gd, [{
+      type: 'streamtube',
+      cx, cy, cz,
+      u, v, w,
+      x, y, z,
+      bounds: [[-5, -5, -5], [5, 5, 5]], 
+      widthScale: 100, 
+      colormap:'portland'
+    }], {
+      scene: {
+        xaxis: {range: [-5, 5]},
+        yaxis: {range: [-5, 5]},
+        zaxis: {range: [-5, 5]}
+      }
+    })
+
+*/
+
+
 
 'use strict';
 
@@ -83,24 +111,6 @@ function convert(scene, trace) {
         return result;
     }
 
-    // var us = []; for (var i=0; i<27; i++) us.push(Math.sin(i*0.1));
-    // var vs = []; for (var i=0; i<27; i++) vs.push(Math.cos(i*0.1));
-    // var ws = []; for (var i=0; i<27; i++) ws.push(0.3*Math.sin(i*0.3));
-    // var cx = [], cy=[],cz=[]; for (var i=0; i<7; i++) for(var j=0;j<7;j++) {cx.push(-5); cy.push(i-3); cz.push(j-3); }
-    // Plotly.newPlot(gd, [{
-    //   type: 'streamtube',
-    //   cx, cy, cz,
-    //   u: us, v: vs, w: ws,
-    //   x: [-3,0,3], y: [-3,0,3], z: [-3,0,3],
-    //   bounds: [[-5, -5, -5], [5, 5, 5]], widthScale: 100, colormap:'portland'
-    // }], {
-    //   scene: {
-    //     xaxis: {range: [-5, 5]},
-    //     yaxis: {range: [-5, 5]},
-    //     zaxis: {range: [-5, 5]}
-    //   }
-    // })
-    
     var params = {
         startingPositions: zip3(
             toDataCoords(layout.xaxis, trace.cx, scene.dataScale[0]),
@@ -122,7 +132,10 @@ function convert(scene, trace) {
         widthScale: trace.widthScale
     };
 
-    var bounds = trace.bounds || [[min(trace.u), min(trace.v), min(trace.w)], [max(trace.u), max(trace.v), max(trace.w)]];
+    var bounds = trace.bounds || [
+        [min(trace.x.concat(trace.cx)), min(trace.y.concat(trace.cy)), min(trace.z.concat(trace.cz))], 
+        [max(trace.x.concat(trace.cx)), max(trace.y.concat(trace.cy)), max(trace.z.concat(trace.cz))]
+    ];
 
     bounds = [
         [
